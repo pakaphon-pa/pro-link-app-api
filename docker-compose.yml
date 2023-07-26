@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    container_name: api
+    build: 
+      context: .
+      dockerfile: dev.Dockerfile
+    ports: 
+      - "8080:8080"
+    restart: on-failure
+    volumes:
+      - .:/app
+  postgres:
+    image: postgres:12-alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "P@ssword"
+    volumes:
+      - "db_volume:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+
+volumes:
+  api:
+  db_volume:
