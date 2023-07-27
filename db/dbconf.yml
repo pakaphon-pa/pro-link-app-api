@@ -1,0 +1,5 @@
+development:
+  driver: postgres
+  open: postgres://postgres:P@assword@postgres:5432/prl?sslmode=disable
+  import:
+    - "github.com/lib/pq"
