@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+database:
+  host: postgres
+  port: 5432
+  username: postgres
+  password: P@ssw0rd
+  name: postgres
+  sslmode: disable
+  timezone: Asia/Bangkok
+  maxIdleConns: 10
+  maxIdleTime: 120
+  maxOpenConns: 20
+  maxLifeTime: 3600
+  sslcert: "path to cert file"
+  sslkey: "path to key file"
+  sslrootcert: "path to root cert file"
+logger:
+  level: debug
+  on-cloud: false
+  development: false
+  stacktrace: true
+  caller: true
+  db-level: debug
