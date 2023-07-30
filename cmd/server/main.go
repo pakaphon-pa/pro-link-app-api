@@ -25,7 +25,7 @@ func init() {
 	database = storage.New(&configs.Database)
 	services = service.New(database)
 	adapters = adapter.New(services)
-	server = app.NewServerHttp(configs, adapters)
+	server = app.NewServerHttp(configs, adapters, database)
 
 }
 

@@ -54,3 +54,7 @@ func New(db *config.DatabaseConfig) *Storage {
 		db: conn,
 	}
 }
+
+func (s *Storage) GetDB() *gorm.DB {
+	return s.db
+}
