@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"pro-link-api/internal/config"
 
+	"github.com/go-redis/redis"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlog "gorm.io/gorm/logger"
@@ -15,18 +16,20 @@ type (
 
 	AbstractStorage[K ModelType] struct {
 		db        *gorm.DB
+		redis     *redis.Client
 		tableName string
 	}
 
 	Storage struct {
-		db *gorm.DB
+		db    *gorm.DB
+		redis *redis.Client
 	}
 
 	ModelType interface {
 	}
 )
 
-func New(db *config.DatabaseConfig) *Storage {
+func New(db *config.DatabaseConfig, redis *config.RedisConfig) *Storage {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", db.Host, db.Username, db.Password, db.Name, db.Port, db.SSLMode, db.Timezone)
 	log := gormlog.Default.LogMode(gormlog.Info)
 
@@ -50,9 +53,31 @@ func New(db *config.DatabaseConfig) *Storage {
 		fmt.Println("Connected...")
 	}
 
+	redisClient := NewRedis(redis)
+
 	return &Storage{
-		db: conn,
+		db:    conn,
+		redis: redisClient,
 	}
+}
+
+func NewRedis(redisConfig *config.RedisConfig) *redis.Client {
+	dsn := redisConfig.Dsn
+	if len(dsn) == 0 {
+		dsn = "redis:6379"
+	}
+
+	client := redis.NewClient(&redis.Options{
+		Addr: dsn,
+	})
+
+	_, err := client.Ping().Result()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return client
 }
 
 func (s *Storage) GetDB() *gorm.DB {

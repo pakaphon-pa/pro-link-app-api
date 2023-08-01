@@ -23,3 +23,5 @@ logger:
   stacktrace: true
   caller: true
   db-level: debug
+Redis: 
+  dsn: redis:6379

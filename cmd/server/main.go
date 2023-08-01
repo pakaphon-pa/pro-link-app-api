@@ -22,8 +22,8 @@ func init() {
 	flag.Parse()
 
 	configs = config.LoadConfig(os.Getenv("CONFIG_PATH"))
-	database = storage.New(&configs.Database)
-	services = service.New(database)
+	database = storage.New(&configs.Database, &configs.Redis)
+	services = service.New(database, configs)
 	adapters = adapter.New(services)
 	server = app.NewServerHttp(configs, adapters, database)
 

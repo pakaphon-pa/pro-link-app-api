@@ -17,6 +17,7 @@ type (
 		Database DatabaseConfig `yaml:"database"`
 		Logger   LoggerConfig   `yaml:"logger"`
 		Swagger  SwaggerConfig  `yaml:"swagger"`
+		Redis    RedisConfig    `yaml:"redis"`
 	}
 
 	ServerConfig struct {
@@ -38,6 +39,10 @@ type (
 		SSLCert      string        `yaml:"sslcert,omitempty"`
 		SSLKey       string        `yaml:"sslkey,omitempty"`
 		SSLRootCert  string        `yaml:"sslrootcert,omitempty"`
+	}
+
+	RedisConfig struct {
+		Dsn string `yaml:"dsn,omitempty"`
 	}
 
 	SwaggerConfig struct {

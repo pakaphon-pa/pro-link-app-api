@@ -1,18 +1,17 @@
-## inital project golang 
+## Side Project
 
-- gin 
-- gorm
-- postgresql
-- docker
-- docker-compose
-- goose migration
-- swagger
+Reviewing Golang with gin gorm 
+
+- CRUD
+- Export PDF
+- Authorization JWT
+- Redis Cache
+- Auto Migration
+
 
 Command 
-
     Run Application
-
-    docker-compose up
+    
 
     Swagger generate command
 

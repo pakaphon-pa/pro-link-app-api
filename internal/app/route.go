@@ -17,6 +17,8 @@ func (s *ServerHttp) Rounte() {
 	s.middleware(r)
 
 	v1 := r.Group("/api/v1")
+	s.AuthenicationRoute(v1)
+
 	eg := v1.Group("/example")
 	eg.GET("/helloworld", s.adapter.Helloworld)
 
@@ -37,4 +39,13 @@ func (s *ServerHttp) middleware(route *gin.Engine) {
 	}))
 
 	route.Use(mdw.DBTransactionMdw(s.database.GetDB()))
+}
+
+func (s *ServerHttp) AuthenicationRoute(v1 *gin.RouterGroup) {
+	auth := v1.Group("/auth")
+
+	auth.POST("/", s.adapter.Authenication)
+	auth.POST("/register", s.adapter.Register)
+	auth.GET("/me", s.adapter.Me)
+	auth.GET("/refresh", s.adapter.Refresh)
 }
