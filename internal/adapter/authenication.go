@@ -16,6 +16,7 @@ import (
 // @Success 200 {string} Helloworld
 // @Router /auth [post]
 func (a *Adapter) Authenication(g *gin.Context) {
+	a.authService.Authenication()
 	g.JSON(http.StatusOK, "helloworld")
 }
 

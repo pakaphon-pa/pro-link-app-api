@@ -3,11 +3,13 @@ package adapter
 import "pro-link-api/internal/service"
 
 type Adapter struct {
-	service *service.Service
+	service     *service.Service
+	authService *service.AuthService
 }
 
-func New(service *service.Service) *Adapter {
+func New(svr *service.Service) *Adapter {
 	return &Adapter{
-		service: service,
+		service:     svr,
+		authService: service.NewAuthService(svr),
 	}
 }

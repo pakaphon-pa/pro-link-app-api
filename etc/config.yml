@@ -25,3 +25,10 @@ logger:
   db-level: debug
 Redis: 
   dsn: redis:6379
+Jwt: 
+  access-secret: 918bb09f-a109-4071-9883-b75899b1918b
+  access-expired: 15m
+  access-max-age: 15
+  refresh-secret: 7b065650-3126-4e8d-ae7f-36a184c56baf
+  refresh-expired: 60m
+  refresh-max-age: 60

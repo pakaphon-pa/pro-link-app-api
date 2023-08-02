@@ -46,6 +46,6 @@ func (s *ServerHttp) AuthenicationRoute(v1 *gin.RouterGroup) {
 
 	auth.POST("/", s.adapter.Authenication)
 	auth.POST("/register", s.adapter.Register)
-	auth.GET("/me", s.adapter.Me)
+	auth.GET("/me", mdw.AuthMiddleware(s.configs), s.adapter.Me)
 	auth.GET("/refresh", s.adapter.Refresh)
 }

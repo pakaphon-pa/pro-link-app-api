@@ -13,11 +13,12 @@ import (
 
 type (
 	Config struct {
-		Server   ServerConfig   `yaml:"server"`
-		Database DatabaseConfig `yaml:"database"`
-		Logger   LoggerConfig   `yaml:"logger"`
-		Swagger  SwaggerConfig  `yaml:"swagger"`
-		Redis    RedisConfig    `yaml:"redis"`
+		Server    ServerConfig   `yaml:"server"`
+		Database  DatabaseConfig `yaml:"database"`
+		Logger    LoggerConfig   `yaml:"logger"`
+		Swagger   SwaggerConfig  `yaml:"swagger"`
+		Redis     RedisConfig    `yaml:"redis"`
+		JwtConfig JwtConfig      `yaml:"jwt"`
 	}
 
 	ServerConfig struct {
@@ -56,6 +57,15 @@ type (
 		Stacktrace  bool   `mapstructure:"stacktrace"`
 		Caller      bool   `mapstructure:"caller"`
 		DbLevel     string `mapstructure:"db-level"`
+	}
+
+	JwtConfig struct {
+		AccessSecret   string `mapstructure:"access-secret"`
+		AccessExpired  string `mapstructure:"access-expired"`
+		AccessMaxAge   string `mapstructure:"access-max-age"`
+		RefreshSecret  string `mapstructure:"refresh-secret"`
+		RefreshExpired string `mapstructure:"refresh-expired"`
+		RefreshMaxAge  string `mapstructure:"refresh-max-age"`
 	}
 )
 
