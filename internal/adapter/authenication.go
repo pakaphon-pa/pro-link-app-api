@@ -16,8 +16,13 @@ import (
 // @Success 200 {string} Helloworld
 // @Router /auth [post]
 func (a *Adapter) Authenication(g *gin.Context) {
-	a.authService.Authenication()
-	g.JSON(http.StatusOK, "helloworld")
+	res, err := a.authService.Authenication(g)
+
+	if err != nil {
+		panic(err)
+	}
+
+	g.JSON(http.StatusOK, res)
 }
 
 // Register godoc

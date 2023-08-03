@@ -3,6 +3,7 @@ package mdw
 import (
 	"log"
 	"net/http"
+	"pro-link-api/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -19,7 +20,7 @@ func DBTransactionMdw(db *gorm.DB) gin.HandlerFunc {
 			}
 		}()
 
-		c.Set("db_trx", txHandle)
+		c.Set(utils.DbTrx, txHandle)
 		c.Next()
 
 		if isStatusInList(c.Writer.Status(), []int{http.StatusOK, http.StatusCreated}) {

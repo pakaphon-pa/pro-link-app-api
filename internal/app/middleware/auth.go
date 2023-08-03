@@ -1,7 +1,6 @@
 package mdw
 
 import (
-	"fmt"
 	"net/http"
 	"pro-link-api/internal/config"
 	"pro-link-api/internal/pkg/utils"
@@ -11,13 +10,16 @@ import (
 
 func AuthMiddleware(config *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenAuth, err := utils.ExtractMetaData(&config.JwtConfig, c.Request)
-		fmt.Print(tokenAuth)
+		tokenString := utils.ExtractToken(c.Request)
+
+		tokenAuth, err := utils.ExtractMetaData(&config.JwtConfig, tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, "unauthorized")
+			c.Abort()
 			return
 		}
-
+		c.Set(utils.Uuid, tokenAuth.AccessUuid)
+		c.Set(utils.UserEmail, tokenAuth.Email)
 		c.Next()
 	}
 }

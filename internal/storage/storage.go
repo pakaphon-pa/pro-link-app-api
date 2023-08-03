@@ -83,3 +83,7 @@ func NewRedis(redisConfig *config.RedisConfig) *redis.Client {
 func (s *Storage) GetDB() *gorm.DB {
 	return s.db
 }
+
+func (s *Storage) GetRedis() *redis.Client {
+	return s.redis
+}

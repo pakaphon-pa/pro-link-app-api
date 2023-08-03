@@ -62,10 +62,10 @@ type (
 	JwtConfig struct {
 		AccessSecret   string `mapstructure:"access-secret"`
 		AccessExpired  string `mapstructure:"access-expired"`
-		AccessMaxAge   string `mapstructure:"access-max-age"`
+		AccessMaxAge   int    `mapstructure:"access-max-age"`
 		RefreshSecret  string `mapstructure:"refresh-secret"`
 		RefreshExpired string `mapstructure:"refresh-expired"`
-		RefreshMaxAge  string `mapstructure:"refresh-max-age"`
+		RefreshMaxAge  int    `mapstructure:"refresh-max-age"`
 	}
 )
 

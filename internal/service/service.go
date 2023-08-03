@@ -7,7 +7,8 @@ import (
 
 type (
 	Service struct {
-		Config *config.Config
+		Config  *config.Config
+		Storage *storage.Storage
 	}
 
 	AuthService struct {
@@ -17,7 +18,8 @@ type (
 
 func New(storage *storage.Storage, config *config.Config) *Service {
 	return &Service{
-		Config: config,
+		Config:  config,
+		Storage: storage,
 	}
 }
 
