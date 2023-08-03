@@ -2,6 +2,8 @@ package adapter
 
 import (
 	"net/http"
+	"pro-link-api/api"
+	"pro-link-api/internal/pkg/exceptions"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +37,14 @@ func (a *Adapter) Authenication(g *gin.Context) {
 // @Success 200 {string} Helloworld
 // @Router /auth/register [post]
 func (a *Adapter) Register(g *gin.Context) {
-	g.JSON(http.StatusOK, "helloworld")
+	body := new(api.RegisterRequest)
+
+	if err := g.BindJSON(&body); err != nil {
+		g.Error(err)
+		return
+	}
+
+	g.Error(exceptions.NewWithStatus(http.StatusBadRequest, "test111", "test"))
 }
 
 // Me godoc

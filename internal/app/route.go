@@ -3,6 +3,7 @@ package app
 import (
 	"pro-link-api/docs"
 	mdw "pro-link-api/internal/app/middleware"
+	"pro-link-api/internal/pkg/exceptions"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,8 +38,9 @@ func (s *ServerHttp) middleware(route *gin.Engine) {
 		AllowHeaders:     []string{"Origin", "Accept", "Content-type"},
 		AllowCredentials: true,
 	}))
-
+	route.Use(exceptions.HttpErrorHandler())
 	route.Use(mdw.DBTransactionMdw(s.database.GetDB()))
+
 }
 
 func (s *ServerHttp) AuthenicationRoute(v1 *gin.RouterGroup) {
