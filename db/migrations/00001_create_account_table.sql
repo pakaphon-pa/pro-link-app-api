@@ -9,11 +9,12 @@ CREATE TABLE account (
     acc_email VARCHAR(255) NOT NULL,
     acc_password VARCHAR(255) NOT NULL,
     acc_last_login TIMESTAMPTZ NULL,
+    acc_is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     acc_created_date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     acc_created_by INT NOT NULL,
     acc_updated_date TIMESTAMPTZ NULL,
     acc_updated_by INT NOT NULL,
-    CONSTRAINT acc_id PRIMARY KEY(acc_id)
+    CONSTRAINT PK_account PRIMARY KEY(acc_id)
 );
 
 -- +goose Down

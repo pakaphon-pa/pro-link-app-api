@@ -1,8 +1,10 @@
 package storage
 
 import (
+	"context"
 	"fmt"
 	"pro-link-api/internal/config"
+	"pro-link-api/internal/model"
 
 	"github.com/go-redis/redis"
 	"gorm.io/driver/postgres"
@@ -12,6 +14,7 @@ import (
 
 type (
 	IStorage[K ModelType] interface {
+		FindById(ctx context.Context, id int) (data K, err error)
 	}
 
 	AbstractStorage[K ModelType] struct {
@@ -26,6 +29,12 @@ type (
 	}
 
 	ModelType interface {
+		*model.Account | *model.Education |
+			*model.Experience |
+			*model.Language |
+			*model.Profile |
+			*model.Skill |
+			*model.WebsiteProfile
 	}
 )
 
@@ -78,6 +87,11 @@ func NewRedis(redisConfig *config.RedisConfig) *redis.Client {
 	}
 
 	return client
+}
+
+func (s *AbstractStorage[K]) FindById(ctx context.Context, id int) (data K, err error) {
+	err = s.db.WithContext(ctx).Table(s.tableName).First(&data, id).Error
+	return data, err
 }
 
 func (s *Storage) GetDB() *gorm.DB {

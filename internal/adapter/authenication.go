@@ -3,7 +3,6 @@ package adapter
 import (
 	"net/http"
 	"pro-link-api/api"
-	"pro-link-api/internal/pkg/exceptions"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,7 +43,6 @@ func (a *Adapter) Register(g *gin.Context) {
 		return
 	}
 
-	g.Error(exceptions.NewWithStatus(http.StatusBadRequest, "test111", "test"))
 }
 
 // Me godoc

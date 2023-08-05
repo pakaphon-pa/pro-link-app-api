@@ -12,7 +12,6 @@ import (
 func AuthMiddleware(config *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := utils.ExtractToken(c.Request)
-
 		tokenAuth, err := utils.ExtractMetaData(&config.JwtConfig, tokenString)
 		if err != nil {
 			c.AbortWithError(http.StatusForbidden, exceptions.NewWithStatus(http.StatusForbidden, "Unauthorized", "Unauthorized"))
