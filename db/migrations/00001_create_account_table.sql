@@ -7,6 +7,7 @@ CREATE SEQUENCE account_seq
 CREATE TABLE account (
     acc_id INT NOT NULL DEFAULT nextval('account_seq'),
     acc_email VARCHAR(255) NOT NULL,
+    acc_username VARCHAR(255) NOT NULL,
     acc_password VARCHAR(255) NOT NULL,
     acc_last_login TIMESTAMPTZ NULL,
     acc_is_verified BOOLEAN NOT NULL DEFAULT FALSE,

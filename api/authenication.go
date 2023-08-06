@@ -6,6 +6,11 @@ type (
 		RefreshToken string `json:"refresh_token"`
 	}
 
+	LoginRequest struct {
+		Username string `json:"username" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
+
 	RegisterRequest struct {
 		Username        string `json:"username" binding:"required"`
 		Password        string `json:"password" binding:"required"`

@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"fmt"
 	"net/http"
 	"pro-link-api/api"
 
@@ -17,10 +18,18 @@ import (
 // @Success 200 {string} Helloworld
 // @Router /auth [post]
 func (a *Adapter) Authenication(g *gin.Context) {
-	res, err := a.authService.Authenication(g)
+	body := new(api.LoginRequest)
+
+	if err := g.BindJSON(&body); err != nil {
+		g.Error(err)
+		return
+	}
+
+	res, err := a.authService.Authenication(g, body)
 
 	if err != nil {
-		panic(err)
+		g.Error(err)
+		return
 	}
 
 	g.JSON(http.StatusOK, res)
@@ -42,6 +51,15 @@ func (a *Adapter) Register(g *gin.Context) {
 		g.Error(err)
 		return
 	}
+	fmt.Println(body)
+	res, err := a.authService.Register(g, body)
+
+	if err != nil {
+		g.Error(err)
+		return
+	}
+
+	g.JSON(http.StatusOK, res)
 
 }
 

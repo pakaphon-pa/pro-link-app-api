@@ -35,7 +35,6 @@ type AccessData struct {
 
 func CreateToken(jwtConfig *config.JwtConfig, email string) (TokenDetail, error) {
 	accessUuid := uuid.NewV4().String()
-
 	atClamins := CustomClaim{}
 	atClamins.Authorize = true
 	atClamins.AccessUuid = accessUuid
@@ -50,7 +49,7 @@ func CreateToken(jwtConfig *config.JwtConfig, email string) (TokenDetail, error)
 	rtClamins.AccessUuid = refreshUuid
 	rtClamins.Email = email
 	rtClamins.Exp = time.Now().Add(time.Minute * time.Duration(jwtConfig.RefreshMaxAge)).Unix()
-	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, atClamins)
+	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClamins)
 	refreshToekn, _ := rt.SignedString([]byte(jwtConfig.RefreshSecret))
 
 	return TokenDetail{

@@ -6,7 +6,7 @@ import (
 
 type Adapter struct {
 	service     *service.Service
-	authService *service.AuthService
+	authService service.IAuthService
 }
 
 func New(svr *service.Service) *Adapter {

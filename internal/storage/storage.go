@@ -15,6 +15,10 @@ import (
 type (
 	IStorage[K ModelType] interface {
 		FindById(ctx context.Context, id int) (data K, err error)
+		Save(tx *gorm.DB, ctx context.Context, data K) (result K, err error)
+		BulkSave(tx *gorm.DB, ctx context.Context, data []K) (err error)
+		DeleteById(tx *gorm.DB, ctx context.Context, id int) (err error)
+		BulkDelete(tx *gorm.DB, ctx context.Context, id []int) (err error)
 	}
 
 	AbstractStorage[K ModelType] struct {
@@ -92,6 +96,31 @@ func NewRedis(redisConfig *config.RedisConfig) *redis.Client {
 func (s *AbstractStorage[K]) FindById(ctx context.Context, id int) (data K, err error) {
 	err = s.db.WithContext(ctx).Table(s.tableName).First(&data, id).Error
 	return data, err
+}
+
+func (s *AbstractStorage[K]) Save(tx *gorm.DB, ctx context.Context, data K) (result K, err error) {
+	err = tx.WithContext(ctx).Save(&data).Error
+	result = data
+	return
+}
+
+func (s *AbstractStorage[K]) BulkSave(tx *gorm.DB, ctx context.Context, data []K) (err error) {
+	if len(data) > 0 {
+		err = tx.WithContext(ctx).Save(&data).Error
+	}
+	return
+}
+
+func (s *AbstractStorage[K]) DeleteById(tx *gorm.DB, ctx context.Context, id int) (err error) {
+	err = tx.WithContext(ctx).Delete(&id).Error
+	return
+}
+
+func (s *AbstractStorage[K]) BulkDelete(tx *gorm.DB, ctx context.Context, id []int) (err error) {
+	if len(id) > 0 {
+		err = tx.WithContext(ctx).Delete(id).Error
+	}
+	return
 }
 
 func (s *Storage) GetDB() *gorm.DB {

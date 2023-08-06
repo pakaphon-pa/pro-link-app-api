@@ -1,12 +1,14 @@
 package storage
 
 import (
+	"context"
 	"pro-link-api/internal/model"
 )
 
 type (
 	IAccountStorage interface {
 		IStorage[*model.Account]
+		FindByEmailOrName(ctx context.Context, email string, username string) (*model.Account, error)
 	}
 
 	AccountStorage struct {
@@ -21,4 +23,20 @@ func NewAccountStorage(s *Storage) *AccountStorage {
 			tableName: model.AccountTableName,
 		},
 	}
+}
+
+func (s *AccountStorage) FindByEmailOrName(ctx context.Context, email string, username string) (result *model.Account, err error) {
+	db := s.db.WithContext(ctx)
+
+	if email != "" {
+		db.Where("acc_email =?", email)
+	}
+
+	if username != "" {
+		db.Where("acc_username =?", username)
+	}
+
+	err = db.Find(&result).Error
+
+	return result, err
 }
