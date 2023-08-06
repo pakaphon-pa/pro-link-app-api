@@ -27,6 +27,10 @@ func (s *AuthService) Authenication(c context.Context, auth *api.LoginRequest) (
 		return nil, err
 	}
 
+	if account.AccID == 0 {
+		return nil, exceptions.NewWithStatus(http.StatusUnauthorized, "Unauthorizated", "Invalid credentials")
+	}
+
 	isPass, err := s.comparePassword(c, &auth.Password, account)
 	if err != nil {
 		return nil, err
@@ -38,6 +42,11 @@ func (s *AuthService) Authenication(c context.Context, auth *api.LoginRequest) (
 
 	token, err := utils.CreateToken(&s.Config.JwtConfig, account.AccEmail)
 
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.CreateAuth(uint64(account.AccID), &token)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +158,8 @@ func (s *AuthService) CreateAuth(userId uint64, td *utils.TokenDetail) error {
 	at := time.Unix(td.AccessExp, 0)
 	rt := time.Unix(td.RefreshExp, 0)
 	now := time.Now()
-	errAccess := s.Storage.GetRedis().Set(td.AccessToken, strconv.Itoa(int(userId)), at.Sub(now)).Err()
+	fmt.Println(td.AccessUuid)
+	errAccess := s.Storage.GetRedis().Set(td.AccessUuid, strconv.Itoa(int(userId)), at.Sub(now)).Err()
 	if errAccess != nil {
 		return errAccess
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"pro-link-api/api"
+	"pro-link-api/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -73,7 +74,10 @@ func (a *Adapter) Register(g *gin.Context) {
 // @Success 200 {string} Helloworld
 // @Router /auth/me [post]
 func (a *Adapter) Me(g *gin.Context) {
-	g.JSON(http.StatusOK, "helloworld")
+
+	userId, _ := utils.GetUserId(g)
+
+	g.JSON(http.StatusOK, userId)
 }
 
 // Refresh godoc

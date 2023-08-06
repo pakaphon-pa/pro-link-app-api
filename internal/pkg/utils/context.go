@@ -18,6 +18,7 @@ const (
 
 func GetTrx(ctx context.Context) (*gorm.DB, error) {
 	tx, ok := ctx.Value(DbTrx).(*gorm.DB)
+
 	if !ok {
 		return nil, errors.New("can not get tx value from context")
 	}
@@ -26,6 +27,7 @@ func GetTrx(ctx context.Context) (*gorm.DB, error) {
 
 func GetUserId(ctx context.Context) (int, error) {
 	userId, ok := ctx.Value(UserId).(int)
+
 	if !ok {
 		return 0, errors.New("can not get user id value from context")
 	}

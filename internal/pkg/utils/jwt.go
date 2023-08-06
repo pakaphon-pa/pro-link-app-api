@@ -35,7 +35,7 @@ type AccessData struct {
 
 func CreateToken(jwtConfig *config.JwtConfig, email string) (TokenDetail, error) {
 	accessUuid := uuid.NewV4().String()
-	atClamins := CustomClaim{}
+	atClamins := &CustomClaim{}
 	atClamins.Authorize = true
 	atClamins.AccessUuid = accessUuid
 	atClamins.Email = email
@@ -44,7 +44,7 @@ func CreateToken(jwtConfig *config.JwtConfig, email string) (TokenDetail, error)
 	accessToken, _ := at.SignedString([]byte(jwtConfig.AccessSecret))
 
 	refreshUuid := uuid.NewV4().String()
-	rtClamins := CustomClaim{}
+	rtClamins := &CustomClaim{}
 	rtClamins.Authorize = true
 	rtClamins.AccessUuid = refreshUuid
 	rtClamins.Email = email
@@ -63,8 +63,7 @@ func CreateToken(jwtConfig *config.JwtConfig, email string) (TokenDetail, error)
 }
 
 func VerifyToken(jwtConfig *config.JwtConfig, tokenString string) (*jwt.Token, error) {
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaim{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
@@ -82,8 +81,7 @@ func ExtractMetaData(jwtConfig *config.JwtConfig, tokenString string) (*AccessDa
 	}
 
 	result := AccessData{}
-	claim, ok := token.Claims.(CustomClaim)
-
+	claim, ok := token.Claims.(*CustomClaim)
 	if ok && token.Valid {
 		result.AccessUuid = claim.AccessUuid
 		result.Email = claim.Email
