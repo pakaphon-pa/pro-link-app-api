@@ -17,6 +17,7 @@ import (
 type IAuthService interface {
 	Authenication(c context.Context, auth *api.LoginRequest) (*api.AuthenicationResponse, error)
 	Register(c context.Context, account *api.RegisterRequest) (*api.AuthenicationResponse, error)
+	SendVerifyAccountEmail(c context.Context) (*api.SaveResponse, error)
 }
 
 func (s *AuthService) Authenication(c context.Context, auth *api.LoginRequest) (*api.AuthenicationResponse, error) {
@@ -89,8 +90,16 @@ func (s *AuthService) Register(c context.Context, account *api.RegisterRequest) 
 		return nil, err
 	}
 
+	err = s.NotificationClient.SendVerifyAccountEmail(saved.AccEmail, saved.AccEmail)
+	if err != nil {
+		fmt.Println("Error sending verify account email")
+		return nil, err
+	}
+	fmt.Println("Error sending verify account email")
+
 	token, err := utils.CreateToken(&s.Config.JwtConfig, account.Email)
 	if err != nil {
+
 		return nil, err
 	}
 
@@ -99,9 +108,31 @@ func (s *AuthService) Register(c context.Context, account *api.RegisterRequest) 
 		return nil, err
 	}
 
+	fmt.Println("Create Account Successfully")
 	return &api.AuthenicationResponse{
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
+	}, nil
+}
+
+func (s *AuthService) SendVerifyAccountEmail(c context.Context) (*api.SaveResponse, error) {
+
+	_, _, email, err := utils.GetUserIdAndTrx(c)
+
+	err = s.NotificationClient.SendVerifyAccountEmail(email, "test test")
+	if err != nil {
+		fmt.Println("Error sending verify account email")
+		return nil, err
+	}
+	fmt.Println("Error sending verify account email")
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.SaveResponse{
+		Message: "Email sent",
+		Code:    "Success",
 	}, nil
 }
 

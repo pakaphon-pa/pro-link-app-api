@@ -1,7 +1,6 @@
 package adapter
 
 import (
-	"fmt"
 	"net/http"
 	"pro-link-api/api"
 	"pro-link-api/internal/pkg/utils"
@@ -16,7 +15,7 @@ import (
 // @Tags authenication
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
+// @Success 200 {object} Book "ok"
 // @Router /auth [post]
 func (a *Adapter) Authenication(g *gin.Context) {
 	body := new(api.LoginRequest)
@@ -43,7 +42,8 @@ func (a *Adapter) Authenication(g *gin.Context) {
 // @Tags authenication
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
+// @Success 200 {object} api.AuthenicationResponse "ok"
+// @Failure 400 {object} api.ErrorResponse "We need ID!!"
 // @Router /auth/register [post]
 func (a *Adapter) Register(g *gin.Context) {
 	body := new(api.RegisterRequest)
@@ -52,7 +52,6 @@ func (a *Adapter) Register(g *gin.Context) {
 		g.Error(err)
 		return
 	}
-	fmt.Println(body)
 	res, err := a.authService.Register(g, body)
 
 	if err != nil {
@@ -71,7 +70,8 @@ func (a *Adapter) Register(g *gin.Context) {
 // @Tags authenication
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
+// @Success 200 {object} api.Profile "ok"
+// @Failure 400 {object} api.ErrorResponse "We need ID!!"
 // @Router /auth/me [post]
 func (a *Adapter) Me(g *gin.Context) {
 
@@ -87,8 +87,29 @@ func (a *Adapter) Me(g *gin.Context) {
 // @Tags authenication
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
+// @Success 200 {object} api.AuthenicationResponse "ok"
 // @Router /auth/refresh [post]
 func (a *Adapter) Refresh(g *gin.Context) {
 	g.JSON(http.StatusOK, "helloworld")
+}
+
+// SendVerifyAccountEmail godoc
+// @Summary send verify account email by token
+// @Schemes
+// @Description send verify account email by token
+// @Tags authenication
+// @Accept json
+// @Produce json
+// @Success 200 {object} api.SaveResponse "ok"
+// @Failure 400 {object} api.ErrorResponse "We need ID!!"
+// @Router /auth/verify [post]
+func (a *Adapter) SendVerifyAccountEmail(g *gin.Context) {
+
+	res, err := a.authService.SendVerifyAccountEmail(g)
+	if err != nil {
+		g.Error(err)
+		return
+	}
+
+	g.JSON(http.StatusOK, res)
 }

@@ -1,8 +1,12 @@
 package api
 
 type (
-	Profile struct {
+	ProfileRequest struct {
+		Data *ProfileResponse `json:"username"`
+	}
+	ProfileResponse struct {
 		Id          int           `json:"id"`
+		AccId       int           `json:"acc_id"`
 		FirstName   string        `json:"first_name"`
 		LastName    string        `json:"last_name"`
 		About       *string       `json:"about"`

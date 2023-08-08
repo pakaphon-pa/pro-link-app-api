@@ -19,6 +19,7 @@ type (
 		Swagger   SwaggerConfig  `yaml:"swagger"`
 		Redis     RedisConfig    `yaml:"redis"`
 		JwtConfig JwtConfig      `yaml:"jwt"`
+		Email     EmailConfig    `yaml:"email"`
 	}
 
 	ServerConfig struct {
@@ -66,6 +67,14 @@ type (
 		RefreshSecret  string `mapstructure:"refresh-secret"`
 		RefreshExpired string `mapstructure:"refresh-expired"`
 		RefreshMaxAge  int    `mapstructure:"refresh-max-age"`
+	}
+
+	EmailConfig struct {
+		Host     string `mapstructure:"host"`
+		Port     int    `mapstructure:"port"`
+		Username string `mapstructure:"username"`
+		Password string `mapstructure:"password"`
+		From     string `mapstructure:"from"`
 	}
 )
 

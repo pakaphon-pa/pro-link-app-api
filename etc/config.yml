@@ -32,3 +32,9 @@ Jwt:
   refresh-secret: 7b065650-3126-4e8d-ae7f-36a184c56baf
   refresh-expired: 60m
   refresh-max-age: 60
+email:
+  host: mailhog
+  port: 1025
+  username: ""
+  password: ""
+  from: sender@noreply.com

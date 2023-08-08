@@ -49,5 +49,13 @@ func (s *ServerHttp) AuthenicationRoute(v1 *gin.RouterGroup) {
 	auth.POST("/", s.adapter.Authenication)
 	auth.POST("/register", s.adapter.Register)
 	auth.GET("/me", mdw.AuthMiddleware(s.configs, s.database.GetRedis()), s.adapter.Me)
+	auth.GET("/verify", mdw.AuthMiddleware(s.configs, s.database.GetRedis()), s.adapter.SendVerifyAccountEmail)
 	auth.GET("/refresh", s.adapter.Refresh)
+}
+
+func (s *ServerHttp) UserInfoRoute(v1 *gin.RouterGroup) {
+	user := v1.Group("/users")
+	user.Use(mdw.AuthMiddleware(s.configs, s.database.GetRedis()))
+
+	user.PUT("", s.adapter.Refresh)
 }

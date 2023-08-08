@@ -35,16 +35,31 @@ func GetUserId(ctx context.Context) (int, error) {
 	return userId, nil
 }
 
-func GetUserIdAndTrx(ctx context.Context) (*gorm.DB, int, error) {
+func GetEmail(ctx context.Context) (string, error) {
+	userId, ok := ctx.Value(UserEmail).(string)
+
+	if !ok {
+		return "", errors.New("can not get user id value from context")
+	}
+
+	return userId, nil
+}
+
+func GetUserIdAndTrx(ctx context.Context) (*gorm.DB, int, string, error) {
 	tx, err := GetTrx(ctx)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, "", err
 	}
 
 	userId, err := GetUserId(ctx)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, "", err
 	}
 
-	return tx, userId, nil
+	email, err := GetEmail(ctx)
+	if err != nil {
+		return nil, 0, "", err
+	}
+
+	return tx, userId, email, nil
 }
