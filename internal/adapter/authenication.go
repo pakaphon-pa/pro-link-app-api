@@ -102,10 +102,32 @@ func (a *Adapter) Refresh(g *gin.Context) {
 // @Produce json
 // @Success 200 {object} api.SaveResponse "ok"
 // @Failure 400 {object} api.ErrorResponse "We need ID!!"
-// @Router /auth/verify [post]
+// @Router /auth/send/verify [post]
 func (a *Adapter) SendVerifyAccountEmail(g *gin.Context) {
 
 	res, err := a.authService.SendVerifyAccountEmail(g)
+	if err != nil {
+		g.Error(err)
+		return
+	}
+
+	g.JSON(http.StatusOK, res)
+}
+
+// VerifyAccountByEmail godoc
+// @Summary recives verify account email
+// @Schemes
+// @Description recives verify account email
+// @Tags authenication
+// @Accept json
+// @Produce json
+// @Success 200 {object} api.SaveResponse "ok"
+// @Failure 400 {object} api.ErrorResponse "We need ID!!"
+// @Router /auth/email/verify/{verification_code} [post]
+func (a *Adapter) VerifyAccountByEmail(g *gin.Context) {
+	code := g.Params.ByName("verification_code")
+
+	res, err := a.authService.VerifyEmail(g, code)
 	if err != nil {
 		g.Error(err)
 		return

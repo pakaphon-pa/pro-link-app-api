@@ -10,6 +10,7 @@ CREATE TABLE account (
     acc_username VARCHAR(255) NOT NULL,
     acc_password VARCHAR(255) NOT NULL,
     acc_last_login TIMESTAMPTZ NULL,
+    acc_verification_code VARCHAR(255) NULL,
     acc_is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     acc_created_date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     acc_created_by INT NOT NULL,

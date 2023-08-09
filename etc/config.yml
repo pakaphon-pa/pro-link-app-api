@@ -1,5 +1,6 @@
 server:
   port: 8080
+  client-origin: http://localhost:8080
 
 database:
   host: postgres
@@ -38,3 +39,5 @@ email:
   username: ""
   password: ""
   from: sender@noreply.com
+  template:
+    confirm-account: ../etc/template/confirm-account.html

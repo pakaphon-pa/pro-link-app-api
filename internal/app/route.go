@@ -17,6 +17,9 @@ func (s *ServerHttp) Rounte() {
 	s.swagger(r)
 	s.middleware(r)
 
+	email := r.Group("/email/")
+	email.GET("/verify/:verification_code", s.adapter.VerifyAccountByEmail)
+
 	v1 := r.Group("/api/v1")
 	s.AuthenicationRoute(v1)
 
@@ -49,8 +52,10 @@ func (s *ServerHttp) AuthenicationRoute(v1 *gin.RouterGroup) {
 	auth.POST("/", s.adapter.Authenication)
 	auth.POST("/register", s.adapter.Register)
 	auth.GET("/me", mdw.AuthMiddleware(s.configs, s.database.GetRedis()), s.adapter.Me)
-	auth.GET("/verify", mdw.AuthMiddleware(s.configs, s.database.GetRedis()), s.adapter.SendVerifyAccountEmail)
 	auth.GET("/refresh", s.adapter.Refresh)
+
+	send := auth.Group("/send/")
+	send.GET("/verify", mdw.AuthMiddleware(s.configs, s.database.GetRedis()), s.adapter.SendVerifyAccountEmail)
 }
 
 func (s *ServerHttp) UserInfoRoute(v1 *gin.RouterGroup) {

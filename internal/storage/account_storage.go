@@ -9,6 +9,7 @@ type (
 	IAccountStorage interface {
 		IStorage[*model.Account]
 		FindByEmailOrName(ctx context.Context, email string, username string) (*model.Account, error)
+		FindByVerificationCode(ctx context.Context, code string) (*model.Account, error)
 	}
 
 	AccountStorage struct {
@@ -37,6 +38,14 @@ func (s *AccountStorage) FindByEmailOrName(ctx context.Context, email string, us
 	}
 
 	err = db.Find(&result).Error
+
+	return result, err
+}
+
+func (s *AccountStorage) FindByVerificationCode(ctx context.Context, code string) (result *model.Account, err error) {
+	db := s.db.WithContext(ctx)
+
+	err = db.Where("acc_verification_code = ?", code).Find(&result).Error
 
 	return result, err
 }

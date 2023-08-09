@@ -23,7 +23,8 @@ type (
 	}
 
 	ServerConfig struct {
-		Port string `yaml:"port,omitempty"`
+		Port         string `yaml:"port,omitempty"`
+		ClientOrigin string `yaml:"client-origin,omitempty"`
 	}
 
 	DatabaseConfig struct {
@@ -70,11 +71,16 @@ type (
 	}
 
 	EmailConfig struct {
-		Host     string `mapstructure:"host"`
-		Port     int    `mapstructure:"port"`
-		Username string `mapstructure:"username"`
-		Password string `mapstructure:"password"`
-		From     string `mapstructure:"from"`
+		Host     string              `mapstructure:"host"`
+		Port     int                 `mapstructure:"port"`
+		Username string              `mapstructure:"username"`
+		Password string              `mapstructure:"password"`
+		From     string              `mapstructure:"from"`
+		Template TemplateEmailConfig `mapstructure:"template"`
+	}
+
+	TemplateEmailConfig struct {
+		ConfirmAccount string `mapstructure:"confirm-account"`
 	}
 )
 

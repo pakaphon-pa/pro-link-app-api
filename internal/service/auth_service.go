@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"pro-link-api/api"
+	"pro-link-api/internal/client"
 	"pro-link-api/internal/model"
 	"pro-link-api/internal/pkg/exceptions"
 	utils "pro-link-api/internal/pkg/utils"
 	"strconv"
 	"time"
 
+	"github.com/twinj/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,6 +20,7 @@ type IAuthService interface {
 	Authenication(c context.Context, auth *api.LoginRequest) (*api.AuthenicationResponse, error)
 	Register(c context.Context, account *api.RegisterRequest) (*api.AuthenicationResponse, error)
 	SendVerifyAccountEmail(c context.Context) (*api.SaveResponse, error)
+	VerifyEmail(c context.Context, verificationCode string) (*api.SaveResponse, error)
 }
 
 func (s *AuthService) Authenication(c context.Context, auth *api.LoginRequest) (*api.AuthenicationResponse, error) {
@@ -78,11 +81,15 @@ func (s *AuthService) Register(c context.Context, account *api.RegisterRequest) 
 		return nil, err
 	}
 
+	code := uuid.NewV4().String()
+	verificationCode := utils.Encode(code)
+
 	toModel := &model.Account{
-		AccUsername:  account.Username,
-		AccPassword:  *hashedPassword,
-		AccEmail:     account.Email,
-		AccCreatedBy: 1,
+		AccUsername:         account.Username,
+		AccPassword:         *hashedPassword,
+		AccEmail:            account.Email,
+		AccVerificationCode: &code,
+		AccCreatedBy:        1,
 	}
 
 	saved, err := s.AccountStorage.Save(tx, c, toModel)
@@ -90,7 +97,14 @@ func (s *AuthService) Register(c context.Context, account *api.RegisterRequest) 
 		return nil, err
 	}
 
-	err = s.NotificationClient.SendVerifyAccountEmail(saved.AccEmail, saved.AccEmail)
+	emailReq := &client.VerifyEamilRequest{
+		Email:      saved.AccEmail,
+		VerifyCode: verificationCode,
+		Name:       saved.AccUsername,
+		Url:        s.Config.Server.ClientOrigin + "/email/" + "verify/" + verificationCode,
+	}
+
+	err = s.NotificationClient.SendVerifyAccountEmail(emailReq)
 	if err != nil {
 		fmt.Println("Error sending verify account email")
 		return nil, err
@@ -117,9 +131,40 @@ func (s *AuthService) Register(c context.Context, account *api.RegisterRequest) 
 
 func (s *AuthService) SendVerifyAccountEmail(c context.Context) (*api.SaveResponse, error) {
 
-	_, _, email, err := utils.GetUserIdAndTrx(c)
+	tx, id, _, err := utils.GetUserIdAndTrx(c)
+	if err != nil {
+		return nil, err
+	}
 
-	err = s.NotificationClient.SendVerifyAccountEmail(email, "test test")
+	account, err := s.AccountStorage.FindById(c, id)
+
+	if err != nil {
+		return nil, exceptions.NewWithStatus(http.StatusBadRequest, "Not Found", "Account not found")
+	}
+
+	if account.AccIsVerified {
+		return nil, exceptions.NewWithStatus(http.StatusConflict, "Fail", "account already verified")
+
+	}
+
+	code := uuid.NewV4().String()
+	verificationCode := utils.Encode(code)
+
+	account.AccVerificationCode = &code
+
+	_, err = s.AccountStorage.Save(tx, c, account)
+	if err != nil {
+		return nil, err
+	}
+
+	emailReq := &client.VerifyEamilRequest{
+		Email:      account.AccEmail,
+		VerifyCode: verificationCode,
+		Name:       account.AccUsername,
+		Url:        s.Config.Server.ClientOrigin + "/email/" + "verify/" + verificationCode,
+	}
+
+	err = s.NotificationClient.SendVerifyAccountEmail(emailReq)
 	if err != nil {
 		fmt.Println("Error sending verify account email")
 		return nil, err
@@ -201,4 +246,46 @@ func (s *AuthService) CreateAuth(userId uint64, td *utils.TokenDetail) error {
 	}
 
 	return nil
+}
+
+func (s *AuthService) VerifyEmail(c context.Context, verificationCode string) (*api.SaveResponse, error) {
+	fmt.Println("Verifying email ")
+
+	tx, err := utils.GetTrx(c)
+	if err != nil {
+		return nil, err
+	}
+
+	current := time.Now()
+
+	decode, err := utils.Decode(verificationCode)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := s.AccountStorage.FindByVerificationCode(c, decode)
+
+	if err != nil || result.AccID == 0 {
+		return nil, exceptions.NewWithStatus(http.StatusBadRequest, "Not Found", "Invalid verification code")
+	}
+
+	if result.AccIsVerified {
+		return nil, exceptions.NewWithStatus(http.StatusConflict, "Fail", "account already verified")
+
+	}
+
+	result.AccVerificationCode = nil
+	result.AccIsVerified = true
+	result.AccUpdatedDate = &current
+
+	_, err = s.AccountStorage.Save(tx, c, result)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.SaveResponse{
+		Message: "Email verified",
+		Code:    "Success",
+	}, nil
 }
