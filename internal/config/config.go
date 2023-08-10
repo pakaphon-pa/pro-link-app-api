@@ -13,43 +13,43 @@ import (
 
 type (
 	Config struct {
-		Server    ServerConfig   `yaml:"server"`
-		Database  DatabaseConfig `yaml:"database"`
-		Logger    LoggerConfig   `yaml:"logger"`
-		Swagger   SwaggerConfig  `yaml:"swagger"`
-		Redis     RedisConfig    `yaml:"redis"`
-		JwtConfig JwtConfig      `yaml:"jwt"`
-		Email     EmailConfig    `yaml:"email"`
+		Server    ServerConfig   `mapstructure:"server"`
+		Database  DatabaseConfig `mapstructure:"database"`
+		Logger    LoggerConfig   `mapstructure:"logger"`
+		Swagger   SwaggerConfig  `mapstructure:"swagger"`
+		Redis     RedisConfig    `mapstructure:"redis"`
+		JwtConfig JwtConfig      `mapstructure:"jwt"`
+		Email     EmailConfig    `mapstructure:"email"`
 	}
 
 	ServerConfig struct {
-		Port         string `yaml:"port,omitempty"`
-		ClientOrigin string `yaml:"client-origin,omitempty"`
+		Port         string `mapstructure:"port,omitempty"`
+		ClientOrigin string `mapstructure:"client-origin,omitempty"`
 	}
 
 	DatabaseConfig struct {
-		Host         string        `yaml:"host,omitempty"`
-		Port         string        `yaml:"port,omitempty"`
-		Username     string        `yaml:"username,omitempty"`
-		Password     string        `yaml:"password,omitempty"`
-		Name         string        `yaml:"name,omitempty"`
-		SSLMode      string        `yaml:"sslmode,omitempty"`
-		Timezone     string        `yaml:"timezone,omitempty"`
-		MaxIdleConns int           `yaml:"maxIdleConns,omitempty"`
-		MaxIdleTime  time.Duration `yaml:"maxIdleTime,omitempty"`
-		MaxOpenConns int           `yaml:"maxOpenConns,omitempty"`
-		MaxLifeTime  time.Duration `yaml:"maxLifeTime,omitempty"`
-		SSLCert      string        `yaml:"sslcert,omitempty"`
-		SSLKey       string        `yaml:"sslkey,omitempty"`
-		SSLRootCert  string        `yaml:"sslrootcert,omitempty"`
+		Host         string        `mapstructure:"host,omitempty"`
+		Port         string        `mapstructure:"port,omitempty"`
+		Username     string        `mapstructure:"username,omitempty"`
+		Password     string        `mapstructure:"password,omitempty"`
+		Name         string        `mapstructure:"name,omitempty"`
+		SSLMode      string        `mapstructure:"sslmode,omitempty"`
+		Timezone     string        `mapstructure:"timezone,omitempty"`
+		MaxIdleConns int           `mapstructure:"maxIdleConns,omitempty"`
+		MaxIdleTime  time.Duration `mapstructure:"maxIdleTime,omitempty"`
+		MaxOpenConns int           `mapstructure:"maxOpenConns,omitempty"`
+		MaxLifeTime  time.Duration `mapstructure:"maxLifeTime,omitempty"`
+		SSLCert      string        `mapstructure:"sslcert,omitempty"`
+		SSLKey       string        `mapstructure:"sslkey,omitempty"`
+		SSLRootCert  string        `mapstructure:"sslrootcert,omitempty"`
 	}
 
 	RedisConfig struct {
-		Dsn string `yaml:"dsn,omitempty"`
+		Dsn string `mapstructure:"dsn,omitempty"`
 	}
 
 	SwaggerConfig struct {
-		Enable bool `yaml:"enable,omitempty"`
+		Enable bool `mapstructure:"enable,omitempty"`
 	}
 
 	LoggerConfig struct {

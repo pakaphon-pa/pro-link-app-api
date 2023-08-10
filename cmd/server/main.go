@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"pro-link-api/internal/adapter"
 	"pro-link-api/internal/app"
@@ -33,5 +34,6 @@ func init() {
 }
 
 func main() {
+	fmt.Println("Origin : " + configs.Server.ClientOrigin)
 	server.Start()
 }
