@@ -62,5 +62,5 @@ func (s *ServerHttp) UserInfoRoute(v1 *gin.RouterGroup) {
 	user := v1.Group("/users")
 	user.Use(mdw.AuthMiddleware(s.configs, s.database.GetRedis()))
 
-	user.PUT("", s.adapter.Refresh)
+	user.POST("", s.adapter.SaveUserProfile)
 }

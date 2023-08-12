@@ -1,12 +1,14 @@
 package storage
 
 import (
+	"context"
 	"pro-link-api/internal/model"
 )
 
 type (
 	IWebsiteProfileStorage interface {
 		IStorage[*model.WebsiteProfile]
+		FindByPrfId(ctx context.Context, id int) ([]*model.WebsiteProfile, error)
 	}
 
 	WebsiteProfileStorage struct {
@@ -21,4 +23,9 @@ func NewWebsiteProfileStorage(s *Storage) *WebsiteProfileStorage {
 			tableName: model.WebsiteProfileTableName,
 		},
 	}
+}
+
+func (s *WebsiteProfileStorage) FindByPrfId(ctx context.Context, id int) (data []*model.WebsiteProfile, err error) {
+	err = s.db.WithContext(ctx).Table(s.tableName).Where("prf_id = ?", id).Find(&data).Error
+	return data, err
 }

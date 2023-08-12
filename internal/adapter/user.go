@@ -26,7 +26,7 @@ func (a *Adapter) SaveUserProfile(g *gin.Context) {
 		return
 	}
 	fmt.Println(body)
-	res, err := a.userService.SaveProfile(g, body)
+	res, err := a.userService.SaveUserInfo(g, body)
 
 	if err != nil {
 		g.Error(err)

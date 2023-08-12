@@ -7,15 +7,15 @@ type (
 	ProfileResponse struct {
 		Id          int           `json:"id"`
 		AccId       int           `json:"acc_id"`
-		FirstName   string        `json:"first_name"`
-		LastName    string        `json:"last_name"`
+		FirstName   string        `json:"first_name" binding:"required"`
+		LastName    string        `json:"last_name" binding:"required"`
 		About       *string       `json:"about"`
 		Website     []*Website    `json:"website_list"`
 		PhoneNumber *string       `json:"phone_number"`
 		PhoneType   *string       `json:"phone_type"`
 		Address     *string       `json:"address"`
-		BirthMonth  *int          `json:"birth_month"`
-		BirthDay    *int          `json:"birth_day"`
+		BirthMonth  *string       `json:"birth_month"`
+		BirthDay    *string       `json:"birth_day"`
 		Skill       []*Skill      `json:"skill"`
 		Experience  []*Experience `json:"experience"`
 		Education   []*Education  `json:"education"`
