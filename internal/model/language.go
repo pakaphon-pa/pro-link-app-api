@@ -1,6 +1,7 @@
 package model
 
 import (
+	"pro-link-api/api"
 	"time"
 )
 
@@ -21,4 +22,22 @@ type Language struct {
 
 func (Language) TableName() string {
 	return LanguageTableName
+}
+
+func ToLanguageDomain(data *Language) *api.Language {
+	return &api.Language{
+		Id:          data.LanID,
+		Name:        data.LanName,
+		Proficiency: data.LanProficiency,
+	}
+}
+
+func ToLanguageListDoamin(data []*Language) []*api.Language {
+	result := make([]*api.Language, 0)
+
+	for _, edu := range data {
+		result = append(result, ToLanguageDomain(edu))
+	}
+
+	return result
 }

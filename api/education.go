@@ -8,7 +8,7 @@ type (
 		FieldOfStudy string     `json:"field_of_study"`
 		Start        *YearMonth `json:"start"`
 		End          *YearMonth `json:"end"`
-		Grade        int        `json:"grade"`
+		Grade        string     `json:"grade"`
 		Description  string     `json:"description"`
 	}
 

@@ -3,7 +3,6 @@ package adapter
 import (
 	"net/http"
 	"pro-link-api/api"
-	"pro-link-api/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -75,9 +74,12 @@ func (a *Adapter) Register(g *gin.Context) {
 // @Router /auth/me [post]
 func (a *Adapter) Me(g *gin.Context) {
 
-	userId, _ := utils.GetUserId(g)
-
-	g.JSON(http.StatusOK, userId)
+	res, err := a.authService.Me(g)
+	if err != nil {
+		g.Error(err)
+		return
+	}
+	g.JSON(http.StatusOK, res)
 }
 
 // Refresh godoc

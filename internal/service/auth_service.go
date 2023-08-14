@@ -21,6 +21,7 @@ type IAuthService interface {
 	Register(c context.Context, account *api.RegisterRequest) (*api.AuthenicationResponse, error)
 	SendVerifyAccountEmail(c context.Context) (*api.SaveResponse, error)
 	VerifyEmail(c context.Context, verificationCode string) (*api.SaveResponse, error)
+	Me(c context.Context) (*api.ProfileResponse, error)
 }
 
 func (s *AuthService) Authenication(c context.Context, auth *api.LoginRequest) (*api.AuthenicationResponse, error) {
@@ -179,6 +180,75 @@ func (s *AuthService) SendVerifyAccountEmail(c context.Context) (*api.SaveRespon
 		Message: "Email sent",
 		Code:    "Success",
 	}, nil
+}
+
+func (s *AuthService) Me(c context.Context) (*api.ProfileResponse, error) {
+
+	userId, err := utils.GetUserId(c)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &api.ProfileResponse{
+		AccId: userId,
+	}
+
+	account, err := s.AccountStorage.FindById(c, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.AccId = account.AccID
+
+	profile, err := s.ProfileStorage.FindByAccId(c, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.FirstName = profile.PrfFirstName
+	result.LastName = profile.PrfLastName
+	result.About = profile.PrfAbout
+	result.Address = profile.PrfAddress
+	result.PhoneNumber = profile.PrfPhoneNumber
+	result.PhoneType = profile.PrfPhoneType
+	result.Address = profile.PrfAddress
+
+	edu, err := s.EducationStorage.FindByAccId(c, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.Education = model.ToEducationListDoamin(edu)
+
+	exp, err := s.ExperienceStorage.FindByAccId(c, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.Experience = model.ToExperienceListDoamin(exp)
+
+	skill, err := s.SkillStorage.FindByAccId(c, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.Skill = model.ToSkillListDoamin(skill)
+
+	lan, err := s.LanguageStorage.FindByAccId(c, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.Language = model.ToLanguageListDoamin(lan)
+
+	return result, nil
 }
 
 func (s *AuthService) validateRegister(c context.Context, account *api.RegisterRequest) error {

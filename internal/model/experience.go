@@ -1,6 +1,7 @@
 package model
 
 import (
+	"pro-link-api/api"
 	"time"
 )
 
@@ -31,4 +32,36 @@ type Experience struct {
 
 func (Experience) TableName() string {
 	return ExperienceTableName
+}
+
+func ToExperienceDomain(data *Experience) *api.Experience {
+	return &api.Experience{
+		Id:              data.ExpID,
+		Title:           data.ExpTitle,
+		EmployeeType:    data.ExpEmployeeType,
+		LocationType:    *data.ExpCompanyLocaiton,
+		Company:         data.ExpCompany,
+		CompanyLocation: *data.ExpCompanyLocaiton,
+		Industry:        *data.ExpIndustry,
+		IsCurrent:       data.ExpIsCurrent,
+		Start: &api.YearMonth{
+			Year:  data.ExpStartYear,
+			Month: data.ExpStartMonth,
+		},
+		End: &api.YearMonth{
+			Year:  *data.ExpEndYear,
+			Month: data.ExpEndMonth,
+		},
+		Description: *data.ExpDescription,
+	}
+}
+
+func ToExperienceListDoamin(data []*Experience) []*api.Experience {
+	result := make([]*api.Experience, 0)
+
+	for _, edu := range data {
+		result = append(result, ToExperienceDomain(edu))
+	}
+
+	return result
 }

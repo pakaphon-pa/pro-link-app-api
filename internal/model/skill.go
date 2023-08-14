@@ -1,6 +1,7 @@
 package model
 
 import (
+	"pro-link-api/api"
 	"time"
 )
 
@@ -20,4 +21,21 @@ type Skill struct {
 
 func (Skill) TableName() string {
 	return SkillTableName
+}
+
+func ToSkillDomain(data *Skill) *api.Skill {
+	return &api.Skill{
+		Id:   data.SklID,
+		Name: data.SklName,
+	}
+}
+
+func ToSkillListDoamin(data []*Skill) []*api.Skill {
+	result := make([]*api.Skill, 0)
+
+	for _, edu := range data {
+		result = append(result, ToSkillDomain(edu))
+	}
+
+	return result
 }

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"pro-link-api/api"
 	"time"
 )
 
@@ -28,4 +29,33 @@ type Education struct {
 
 func (Education) TableName() string {
 	return EducationTableName
+}
+
+func ToEducationDomain(data *Education) *api.Education {
+	return &api.Education{
+		Id:           data.EduID,
+		School:       data.EduSchool,
+		Degree:       data.EduDegree,
+		FieldOfStudy: data.EduFieldOfStudy,
+		Start: &api.YearMonth{
+			Year:  data.EduStartYear,
+			Month: data.EduStartMonth,
+		},
+		End: &api.YearMonth{
+			Year:  data.EduEndYear,
+			Month: data.EduEndMonth,
+		},
+		Grade:       *data.EduGrade,
+		Description: *data.EduDescription,
+	}
+}
+
+func ToEducationListDoamin(data []*Education) []*api.Education {
+	result := make([]*api.Education, 0)
+
+	for _, edu := range data {
+		result = append(result, ToEducationDomain(edu))
+	}
+
+	return result
 }
